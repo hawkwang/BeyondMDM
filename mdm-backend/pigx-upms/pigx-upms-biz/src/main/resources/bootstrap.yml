@@ -1,0 +1,28 @@
+server:
+  port: 4000
+
+spring:
+  application:
+    name: @artifactId@
+  # 配置中心
+  cloud:
+    config:
+      fail-fast: true
+      name: ${spring.application.name}
+      profile: ${spring.profiles.active}
+      discovery:
+        enabled: true
+        service-id: pigx-config
+  autoconfigure:
+    exclude: org.springframework.cloud.gateway.config.GatewayAutoConfiguration
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: dev
+# 注册中心配置
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://etiir:etiir@localhost:8761/eureka/
