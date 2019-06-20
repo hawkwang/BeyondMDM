@@ -1,0 +1,41 @@
+# 注册中心配置
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+#      defaultZone: http://etiir:etiir@192.168.4.11:8761/eureka/
+      defaultZone: http://etiir:etiir@localhost:8761/eureka/
+spring:
+  application:
+    name: @artifactId@
+  # 配置中心
+  cloud:
+    config:
+      fail-fast: true
+      name: ${spring.application.name}
+      profile: ${spring.profiles.active}
+      discovery:
+        enabled: true
+        service-id: pigx-config
+  autoconfigure:
+    exclude: org.springframework.cloud.gateway.config.GatewayAutoConfiguration
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: dev
+## spring security 配置
+#security:
+#  oauth2:
+#    client:
+#      client-id: mdm
+#      client-secret: mdm
+#      scope: server
+#      # 默认放行url,子模块重写时application-dev.yml中的公共配置会被覆盖,所以要把公共配置中的放行url再写一次
+#      ignore-urls:
+#        - /actuator/**
+#        - /v2/api-docs
+#        - /user/info/*
+#        - /social/info/*
+#        - /mobile/*
+#        - /log/save

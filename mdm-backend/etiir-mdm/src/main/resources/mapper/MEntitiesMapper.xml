@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etiir.mdm.test.mapper.MEntitiesMapper">
+    <resultMap id="sysLogMap" type="com.etiir.mdm.entity.MEntities">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="desc" column="desc"/>
+        <result property="hasTempTable" column="hasTempTable"/>
+        <result property="tempTable" column="tempTable"/>
+        <result property="codeAutomatic" column="codeAutomatic"/>
+        <result property="codeAutomaticStart" column="codeAutomaticStart"/>
+        <result property="createId" column="createId"/>
+        <result property="createTime" column="createTime"/>
+        <result property="updateId" column="updateId"/>
+        <result property="updateTime" column="updateTime"/>
+        <result property="modelId" column="modelId"/>
+    </resultMap>
+</mapper>

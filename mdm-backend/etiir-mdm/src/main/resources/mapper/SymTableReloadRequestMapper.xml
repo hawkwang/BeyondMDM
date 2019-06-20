@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.etiir.mdm.mapper.symmetric.SymTableReloadRequestMapper">
+    <update id="update" parameterType="java.lang.String">
+        UPDATE sym_table_reload_request
+        SET last_update_time=localtime()
+        WHERE target_node_id=#{2}
+         AND source_node_id=#{1}
+         AND trigger_id=#{0}
+         AND router_id=#{3}
+    </update>
+
+    <insert id="insertSelective" parameterType="org.jumpmind.symmetric.model.TableReloadRequest">
+        INSERT INTO sym_table_reload_request
+          (
+          `target_node_id`,
+  `source_node_id`,
+  `trigger_id`,
+  `router_id`,
+  `create_time`,
+  `create_table`,
+  `delete_first`,
+  `load_id`,
+  `processed`,
+  `last_update_time`
+  )
+  VALUE
+  (
+    #{targetNodeId},
+    #{sourceNodeId},
+    #{triggerId},
+    #{routerId},
+    #{createTime},
+    #{createTable},
+    #{deleteFirst},
+    #{loadId},
+    #{processed},
+    #{lastUpdateTime}
+  )
+    </insert>
+
+    <select id="countAll" resultType="java.lang.Integer">
+       SELECT COUNT(*) FROM sym_table_reload_request
+    </select>
+</mapper>

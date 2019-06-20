@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.etiir.mdm.mapper.symmetric.EntitySyncRelationMapper">
+    <resultMap id="baseResultMap" type="com.etiir.mdm.entity.EntitySyncRelation">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="entity_id" property="entityId" jdbcType="VARCHAR"/>
+        <result column="table_name" property="tableName" jdbcType="VARCHAR"/>
+        <result column="node_group_id" property="nodeGroupId" jdbcType="VARCHAR"/>
+        <result column="set_symmetric" property="setSymmetric" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="baseColumn">
+      id,entity_id,`table_name`,node_group_id,set_symmetric
+    </sql>
+    <insert id="insertSelective" parameterType="com.etiir.mdm.entity.EntitySyncRelation">
+        INSERT INTO entity_sync_relation
+        (
+        <include refid="baseColumn"/>
+        )
+        VALUE
+        (
+        #{id,jdbcType=VARCHAR},
+        #{entityId,jdbcType=VARCHAR},
+        #{tableName,jdbcType=VARCHAR},
+        #{nodeGroupId,jdbcType=VARCHAR},
+        #{setSymmetric,jdbcType=BOOLEAN}
+        )
+    </insert>
+
+    <select id="selectById" resultMap="baseResultMap" parameterType="java.lang.String">
+        SELECT * FROM entity_sync_relation
+        WHERE id=#{id}
+    </select>
+
+    <update id="update" parameterType="com.etiir.mdm.entity.EntitySyncRelation">
+        UPDATE entity_sync_relation
+        SET
+        entity_id=#{entityId,jdbcType=VARCHAR},
+        `table_name`=#{tableName,jdbcType=VARCHAR},
+        node_group_id=#{nodeGroupId,jdbcType=VARCHAR},
+        set_symmetric=#{setSymmetric,jdbcType=BOOLEAN}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE FROM entity_sync_relation
+        WHERE id=#{id}
+    </delete>
+
+    <select id="selectByEntitySyncRelation" parameterType="com.etiir.mdm.entity.EntitySyncRelation" resultMap="baseResultMap">
+        SELECT * FROM entity_sync_relation
+        WHERE 1=1
+        <if test="id!=null and id!=''">
+            AND id=#{id}
+        </if>
+        <if test="entityId!=null and entityId!=''">
+            AND entity_id=#{entityId,jdbcType=VARCHAR}
+        </if>
+        <if test="tableName!=null and tableName!=''">
+            AND `table_name`=#{tableName,jdbcType=VARCHAR}
+        </if>
+        <if test="nodeGroupId!=null and nodeGroupId!=''">
+            AND node_group_id=#{nodeGroupId,jdbcType=VARCHAR}
+        </if>
+        <if test="setSymmetric!=null and setSymmetric!=''">
+            AND set_symmetric=#{setSymmetric,jdbcType=BOOLEAN}
+        </if>
+    </select>
+
+    <select id="selectAll" resultMap="baseResultMap">
+        SELECT * FROM entity_sync_relation
+    </select>
+
+
+
+</mapper>

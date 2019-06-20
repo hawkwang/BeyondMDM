@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.etiir.mdm.mapper.symmetric.TableTriggerMapper">
+    <resultMap id="baseResultMap" type="com.etiir.mdm.entity.TableTrigger">
+        <result column="trigger_id" property="triggerId" jdbcType="VARCHAR"/>
+        <result column="source_table_name" property="sourceTableName" jdbcType="VARCHAR"/>
+        <result column="channel_id" property="channelId" jdbcType="VARCHAR"/>
+        <result column="reload_channel_id" property="reloadChannelId" jdbcType="VARCHAR"/>
+        <result column="sync_on_update" property="syncOnUpdate" jdbcType="BOOLEAN"/>
+        <result column="sync_on_insert" property="syncOnInsert" jdbcType="BOOLEAN"/>
+        <result column="sync_on_delete" property="syncOnDelete" jdbcType="BOOLEAN"/>
+        <result column="sync_on_incoming_batch" property="syncOnIncomingBatch" jdbcType="BOOLEAN"/>
+        <result column="sync_on_update_condition" property="syncOnUpdateCondition" jdbcType="VARCHAR"/>
+        <result column="sync_on_insert_condition" property="syncOnInsertCondition" jdbcType="VARCHAR"/>
+        <result column="sync_on_delete_condition" property="syncOnDeleteCondition" jdbcType="VARCHAR"/>
+        <result column="use_stream_lobs" property="useStreamLobs" jdbcType="BOOLEAN"/>
+        <result column="use_capture_lobs" property="useCaptureLobs" jdbcType="BOOLEAN"/>
+        <result column="use_capture_old_data" property="useCaptureOldData" jdbcType="BOOLEAN"/>
+        <result column="use_handle_key_updates" property="useHandleKeyUpdates" jdbcType="BOOLEAN"/>
+        <result column="stream_row" property="streamRow" jdbcType="BOOLEAN"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="last_update_by" property="lastUpdateBy" jdbcType="VARCHAR"/>
+        <result column="last_update_time" property="lastUpdateTime" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="baseColumn">
+        trigger_id,source_table_name,channel_id,reload_channel_id,sync_on_update,sync_on_insert,
+        sync_on_delete,sync_on_incoming_batch,sync_on_update_condition,sync_on_insert_condition,
+        sync_on_delete_condition,use_stream_lobs,use_capture_lobs,use_capture_old_data,use_handle_key_updates,
+        stream_row,create_time,last_update_by,last_update_time
+    </sql>
+    <insert id="insertSelective" parameterType="com.etiir.mdm.entity.TableTrigger">
+        INSERT INTO sym_trigger
+        (
+        <include refid="baseColumn"/>
+        )
+        VALUE
+        (
+        #{triggerId},
+        #{sourceTableName},
+        #{channelId},
+        #{reloadChannelId},
+        #{syncOnUpdate},
+        #{syncOnInsert},
+        #{syncOnDelete},
+        #{syncOnIncomingBatch},
+        #{syncOnUpdateCondition},
+        #{syncOnInsertCondition},
+        #{syncOnDeleteCondition},
+        #{useStreamLobs},
+        #{useCaptureLobs},
+        #{useCaptureOldData},
+        #{useHandleKeyUpdates},
+        #{streamRow},
+        #{createTime},
+        #{lastUpdateBy},
+        #{lastUpdateTime}
+        )
+    </insert>
+
+    <select id="selectByTriggerId" resultMap="baseResultMap" parameterType="java.lang.String">
+        SELECT * FROM sym_trigger
+        WHERE trigger_id=#{triggerId}
+    </select>
+
+    <update id="update" parameterType="java.lang.String">
+        UPDATE sym_trigger
+        SET last_update_time=localtime() WHERE trigger_id=#{triggerId}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE FROM sym_trigger
+        WHERE trigger_id=#{triggerId}
+    </delete>
+</mapper>

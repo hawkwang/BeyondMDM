@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.etiir.mdm.mapper.symmetric.RouterMapper">
+    <resultMap id="baseResultMap" type="com.etiir.mdm.entity.MRouter">
+        <result column="router_id" property="routerId" jdbcType="VARCHAR"/>
+        <result column="source_node_group_id" property="sourceNodeGroupId" jdbcType="VARCHAR"/>
+        <result column="target_node_group_id" property="targetNodeGroupId" jdbcType="VARCHAR"/>
+        <result column="router_type" property="routerType" jdbcType="VARCHAR"/>
+        <result column="sync_on_update" property="syncOnUpdate" jdbcType="BOOLEAN"/>
+        <result column="sync_on_insert" property="syncOnInsert" jdbcType="BOOLEAN"/>
+        <result column="sync_on_delete" property="syncOnDelete" jdbcType="BOOLEAN"/>
+        <result column="use_source_catalog_schema" property="useSourceCatalogSchema" jdbcType="BOOLEAN"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="last_update_by" property="lastUpdateBy" jdbcType="TIMESTAMP"/>
+        <result column="last_update_time" property="lastUpdateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="baseColumn">
+        router_id,source_node_group_id,target_node_group_id,router_type,sync_on_update,sync_on_insert,sync_on_delete,use_source_catalog_schema,create_time,last_update_by,last_update_time
+    </sql>
+    <insert id="insertSelective" parameterType="com.etiir.mdm.entity.MRouter">
+        INSERT INTO sym_router
+        (
+        <include refid="baseColumn"/>
+        )
+        VALUE
+        (
+        #{routerId},
+        #{sourceNodeGroupId,jdbcType=VARCHAR},
+        #{targetNodeGroupId,jdbcType=VARCHAR},
+        #{routerType,jdbcType=VARCHAR},
+        #{syncOnUpdate},
+        #{syncOnInsert},
+        #{syncOnDelete},
+        #{useSourceCatalogSchema},
+        #{createTime},
+        #{lastUpdateBy},
+        #{lastUpdateTime}
+        )
+    </insert>
+
+    <select id="selectByTriggerId" resultMap="baseResultMap" parameterType="java.lang.String">
+        SELECT * FROM sym_router
+        WHERE router_id=#{routerId}
+    </select>
+
+    <update id="updateById" parameterType="com.etiir.mdm.entity.MRouter">
+        UPDATE sym_router
+        SET
+        last_update_time=localtime()
+        WHERE router_id=#{routerId}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.String">
+        DELETE FROM sym_router
+        WHERE router_id=#{routerId}
+    </delete>
+</mapper>

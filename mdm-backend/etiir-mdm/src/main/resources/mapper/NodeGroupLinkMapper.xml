@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.etiir.mdm.mapper.symmetric.NodeGroupLinkMapper">
+    <resultMap id="baseResultMap" type="org.jumpmind.symmetric.model.NodeGroupLink">
+        <result column="source_node_group_id" property="sourceNodeGroupId" jdbcType="VARCHAR"/>
+        <result column="target_node_group_id" property="targetNodeGroupId" jdbcType="VARCHAR"/>
+        <result column="data_event_action" property="dataEventAction" typeHandler="com.etiir.mdm.util.NodeGroupLinkActionHandler"/>
+        <result column="sync_config_enabled" property="syncConfigEnabled" jdbcType="BOOLEAN"/>
+        <result column="is_reversible" property="isReversible" jdbcType="BOOLEAN"/>
+    </resultMap>
+    <insert id="insert" parameterType="org.jumpmind.symmetric.model.NodeGroupLink">
+        INSERT INTO sym_node_group_link
+        (source_node_group_id,target_node_group_id,data_event_action,sync_config_enabled,is_reversible)
+        VALUE
+        (
+        #{sourceNodeGroupId},
+        #{targetNodeGroupId},
+        #{dataEventAction,typeHandler=com.etiir.mdm.util.NodeGroupLinkActionHandler},
+        #{syncConfigEnabled},
+        #{isReversible}
+        )
+    </insert>
+
+    <select id="selectById" resultMap="baseResultMap" parameterType="java.lang.String">
+        SELECT * FROM sym_node_group_link
+        WHERE source_node_group_id=#{groupId} OR source_node_group_id=#{groupId}
+    </select>
+
+</mapper>

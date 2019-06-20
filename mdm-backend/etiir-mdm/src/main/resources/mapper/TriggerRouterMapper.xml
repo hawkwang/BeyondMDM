@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.etiir.mdm.mapper.symmetric.TriggerRouterMapper">
+
+    <sql id="baseColumn">
+         trigger_id,router_id,enabled,initial_load_order,
+         ping_back_enabled,create_time,last_update_time
+    </sql>
+    <insert id="insertSelctive" parameterType="com.etiir.mdm.entity.MTriggerRouter">
+        INSERT INTO sym_trigger_router
+        (
+        <include refid="baseColumn"/>
+        )
+        VALUE
+        (
+        #{triggerId},
+        #{routerId},
+        #{enabled},
+        #{initialLoadOrder},
+        #{pingBackEnabled},
+        #{createTime},
+        #{lastUpdateTime}
+        )
+    </insert>
+
+    <delete id="deleteById" parameterType="java.lang.String">
+        DELETE FROM entity_sync_relation
+        WHERE id=#{id}
+    </delete>
+
+    <delete id="deleteByTriggerId" parameterType="java.lang.String">
+        DELETE FROM sym_trigger_router
+        WHERE table_name=#{tableName}
+    </delete>
+
+
+</mapper>
