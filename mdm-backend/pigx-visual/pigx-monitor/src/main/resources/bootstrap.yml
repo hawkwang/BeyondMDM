@@ -1,0 +1,31 @@
+server:
+  port: 5001
+
+spring:
+  application:
+    name: @artifactId@
+  #配置中心
+  cloud:
+    config:
+      fail-fast: true
+      name: ${spring.application.name}
+      profile: ${spring.profiles.active}
+      discovery:
+        enabled: true
+        service-id: pigx-config
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: dev
+
+# 注册中心配置
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://etiir:etiir@localhost:8761/eureka/
+turbine:
+  app-config: pigx-upms,pigx-auth
+  cluster-name-expression: new String("default")
+  combine-host-port: true
