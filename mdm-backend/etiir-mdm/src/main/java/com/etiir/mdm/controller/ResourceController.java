@@ -21,8 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
-
 /**
  * @author lmx
  * @packageName com.etiir.mdm.controller

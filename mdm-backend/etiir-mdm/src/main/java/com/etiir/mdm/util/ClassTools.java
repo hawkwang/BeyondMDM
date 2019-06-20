@@ -7,7 +7,6 @@ import java.lang.reflect.Field;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
