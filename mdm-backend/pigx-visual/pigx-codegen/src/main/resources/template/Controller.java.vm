@@ -1,0 +1,97 @@
+/*
+ *    Copyright (c) 2018-2025, lengleng All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * Neither the name of the pig4cloud.com developer nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * Author: lengleng (wangiegie@gmail.com)
+ */
+package ${package}.${moduleName}.controller;
+
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.pig4cloud.pigx.common.core.util.R;
+import com.pig4cloud.pigx.common.log.annotation.SysLog;
+import ${package}.${moduleName}.entity.${className};
+import ${package}.${moduleName}.service.${className}Service;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@RestController
+@AllArgsConstructor
+@RequestMapping("/${pathName}")
+public class ${className}Controller {
+
+  private final  ${className}Service ${classname}Service;
+
+  /**
+   * 分页查询
+   * @param page 分页对象
+   * @param ${classname} ${comments}
+   * @return
+   */
+  @GetMapping("/page")
+  public R get${className}Page(Page page, ${className} ${classname}) {
+    return  new R<>(${classname}Service.page(page,Wrappers.query(${classname})));
+  }
+
+
+  /**
+   * 通过id查询${comments}
+   * @param ${pk.lowerAttrName} id
+   * @return R
+   */
+  @GetMapping("/{${pk.lowerAttrName}}")
+  public R getById(@PathVariable("${pk.lowerAttrName}") ${pk.attrType} ${pk.lowerAttrName}){
+    return new R<>(${classname}Service.getById(${pk.lowerAttrName}));
+  }
+
+  /**
+   * 新增${comments}
+   * @param ${classname} ${comments}
+   * @return R
+   */
+  @SysLog("新增${comments}")
+  @PostMapping
+  public R save(@RequestBody ${className} ${classname}){
+    return new R<>(${classname}Service.save(${classname}));
+  }
+
+  /**
+   * 修改${comments}
+   * @param ${classname} ${comments}
+   * @return R
+   */
+  @SysLog("修改${comments}")
+  @PutMapping
+  public R updateById(@RequestBody ${className} ${classname}){
+    return new R<>(${classname}Service.updateById(${classname}));
+  }
+
+  /**
+   * 通过id删除${comments}
+   * @param ${pk.lowerAttrName} id
+   * @return R
+   */
+  @SysLog("删除${comments}")
+  @DeleteMapping("/{${pk.lowerAttrName}}")
+  public R removeById(@PathVariable ${pk.attrType} ${pk.lowerAttrName}){
+    return new R<>(${classname}Service.removeById(${pk.lowerAttrName}));
+  }
+
+}
