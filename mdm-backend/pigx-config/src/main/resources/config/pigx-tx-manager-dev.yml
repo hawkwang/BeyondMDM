@@ -1,0 +1,24 @@
+# 页面配置
+spring:
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: classpath:/static/
+
+
+# LCN 配置
+tm:
+  transaction:
+    netty:
+      delaytime: 5   # 客户端链接最大通讯时间 （秒）
+      hearttime: 15  # 客户端心跳时间   （秒）
+  redis:
+    savemaxtime: 30  # redis 保存时间  （秒）
+  socket:
+    port: 9998       # 通讯端口
+    maxconnection: 1000  #最大链接数
+  compensate:
+    auto: false   #是否自动补偿
+    notifyUrl: http://ip:port/path #补偿结果通知（配消息总线里面）
+    tryTime: 30     # z再次重试时间间隔
+    maxWaitTime: 5000   # 请求超时的最大时间 (毫秒)

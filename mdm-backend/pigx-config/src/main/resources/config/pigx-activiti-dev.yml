@@ -1,0 +1,34 @@
+## spring security 配置
+security:
+  oauth2:
+    client:
+      client-id: ENC(gPFcUOmJm8WqM3k3eSqS0Q==)
+      client-secret: ENC(gPFcUOmJm8WqM3k3eSqS0Q==)
+      scope: server
+      ignore-urls:
+        - '/actuator/**'
+        - '/v2/api-docs'
+        - '/service/**'
+        - '/editor-app/**'
+        - '/task/view/*'
+        - '/process/resource/**'
+        - '/modeler.html'
+        - '/ws/**'
+spring:
+  autoconfigure:
+    exclude: org.activiti.spring.boot.SecurityAutoConfiguration
+  activiti:
+    check-process-definitions: false
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 1qaz2wsx
+    url: jdbc:mysql://localhost:3306/pigxx_ac?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+
+# 租户表维护
+pigx:
+  tenant:
+    column: tenant_id
+    tables:
+      - oa_leave_bill

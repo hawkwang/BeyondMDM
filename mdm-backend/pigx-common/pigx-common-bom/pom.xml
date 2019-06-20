@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>spring-cloud-dependencies-parent</artifactId>
+		<groupId>org.springframework.cloud</groupId>
+		<version>2.1.3.RELEASE</version>
+		<relativePath/>
+	</parent>
+
+	<artifactId>pigx-common-bom</artifactId>
+	<packaging>pom</packaging>
+	<version>${pigx.version}</version>
+	<description>pigx 公共版本控制</description>
+
+	<properties>
+		<pigx.version>2.6.0</pigx.version>
+		<jackson.modules>2.9.6</jackson.modules>
+		<mybatis-plus.version>3.1.0</mybatis-plus.version>
+		<mysql.connector.version>8.0.13</mysql.connector.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!--pigx 工具包-->
+			<dependency>
+				<groupId>com.pig4cloud</groupId>
+				<artifactId>pigx-common-core</artifactId>
+				<version>${pigx.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.pig4cloud</groupId>
+				<artifactId>pigx-common-data</artifactId>
+				<version>${pigx.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.pig4cloud</groupId>
+				<artifactId>pigx-common-gateway</artifactId>
+				<version>${pigx.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.pig4cloud</groupId>
+				<artifactId>pigx-common-job</artifactId>
+				<version>${pigx.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.pig4cloud</groupId>
+				<artifactId>pigx-common-log</artifactId>
+				<version>${pigx.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.pig4cloud</groupId>
+				<artifactId>pigx-common-minio</artifactId>
+				<version>${pigx.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.pig4cloud</groupId>
+				<artifactId>pigx-common-security</artifactId>
+				<version>${pigx.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.pig4cloud</groupId>
+				<artifactId>pigx-common-swagger</artifactId>
+				<version>${pigx.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.pig4cloud</groupId>
+				<artifactId>pigx-common-transaction</artifactId>
+				<version>${pigx.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.pig4cloud</groupId>
+				<artifactId>pigx-upms-api</artifactId>
+				<version>${pigx.version}</version>
+			</dependency>
+
+			<!--jackson模块-->
+			<dependency>
+				<groupId>com.fasterxml.jackson.module</groupId>
+				<artifactId>jackson-modules-java8</artifactId>
+				<version>${jackson.modules}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!--mybatis plus extension,包含了mybatis plus core-->
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-extension</artifactId>
+				<version>${mybatis-plus.version}</version>
+			</dependency>
+			<!--mybatis-->
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-boot-starter</artifactId>
+				<version>${mybatis-plus.version}</version>
+			</dependency>
+			<!--mysql 驱动-->
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>${mysql.connector.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+</project>
