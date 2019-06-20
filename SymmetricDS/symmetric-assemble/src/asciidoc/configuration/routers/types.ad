@@ -1,0 +1,11 @@
+
+==== Router Types
+
+include::default.ad[]
+include::column.ad[]
+include::audit.ad[]
+include::lookuptable.ad[]
+include::subselect.ad[]
+include::bsh.ad[]
+include::csv.ad[]
+include::dbf.ad[]

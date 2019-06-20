@@ -1,0 +1,9 @@
+*.o
+*.d
+*.so
+/Debug/
+/Debug (Windows)/
+/Debug (Linux)/
+/Release (Windows)/
+/Release (Linux)/
+/.settings/

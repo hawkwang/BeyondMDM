@@ -1,0 +1,47 @@
+apply from: symAssembleDir + '/common.gradle'
+
+    description = 'SymmetricDS Client library for JDBC clients'
+
+    dependencies {
+        compile project(":symmetric-core")
+        compile project(":symmetric-jdbc")
+        compile "org.springframework:spring-context:$springVersion"
+        compile "commons-cli:commons-cli:$commonsCliVersion"
+        compile "commons-vfs:commons-vfs:1.0"
+        // compile "com.jcraft:jsch:0.1.48"
+
+        provided "org.mongodb:mongo-java-driver:2.12.3"
+        provided "org.codehaus.mojo:animal-sniffer-annotations:$animalSnifferVersion"
+        
+        provided ("com.amazon.redshift:redshift-jdbc42-no-awssdk:1.2.18.1036") {
+			exclude group: 'org.apache.httpcomponents'
+            exclude group: 'commons-logging'
+            exclude group: 'com.fasterxml.jackson.core'
+            exclude group: 'commons-codec'
+        }
+        
+        provided ("com.amazonaws:aws-java-sdk-s3:1.11.510") {
+			exclude group: 'org.apache.httpcomponents'
+            exclude group: 'commons-logging'
+            exclude group: 'com.fasterxml.jackson.core'
+            exclude group: 'commons-codec'
+        }
+        
+        provided ("com.microsoft.azure:azure-storage:8.1.0") {
+        		exclude group: 'com.fasterxml.jackson.core'
+                exclude group: 'org.slf4j'
+        	}
+        	
+        provided ("net.snowflake:snowflake-jdbc:3.6.27") {
+        		exclude group: 'com.fasterxml.jackson.core'
+        	}
+        
+        provided 'org.apache.phoenix:phoenix:5.0.0-HBase-2.0'
+        
+        provided 'org.apache.httpcomponents:httpclient:4.5.4' // This is required by com.amazonaws:aws-java-sdk.  It is called out here to upgrade the version because of a user's security concerns.
+
+        testCompile project(path: ':symmetric-util', configuration: 'testArtifacts')
+        testCompile project(path: ':symmetric-io', configuration: 'testArtifacts')
+        testCompile project(path: ':symmetric-jdbc', configuration: 'testArtifacts')
+        testCompile project(path: ':symmetric-core', configuration: 'testArtifacts')
+    }

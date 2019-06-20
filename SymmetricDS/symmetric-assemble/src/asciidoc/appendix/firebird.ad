@@ -1,0 +1,49 @@
+
+=== Firebird
+
+The Firebird Dialect may require the installation of a User Defined Function (UDF) library in order to provide functionality 
+needed by the database triggers.  SymmetricDS includes the required UDF library, called SYM_UDF, in both source form (as a C program) 
+and as pre-compiled libraries for both Windows and Linux.  For Firebird 2.0 and earlier, the UDF is needed for capturing character
+and BLOB types, so the dialect will not allow startup if the UDF is missing.
+For Firebird 2.1 and later, the UDF is only needed for capturing BLOB types, so installation may not be necessary and the dialect does not
+check for it. 
+
+The SYM_UDF library is copied into the UDF folder within the Firebird installation directory.  For Linux users:
+
+*cp databases/firebird/sym_udf.so /opt/firebird/UDF*
+
+For Windows users:
+
+*copy databases\firebird\sym_udf.dll C:\Program Files\Firebird\Firebird_2_0\UDF*
+
+The following limitations currently exist for this dialect:
+
+. The outgoing batch does not honor the channel size, and all outstanding data events are included in a batch.
+
+. Syncing of Binary Large Object (BLOB) is limited to 16KB per column.
+
+. Syncing of character data is limited to 32KB per column.  The overall row size of a resultset cannot
+exceed 64KB.  For change capture, the row_data and old_data are limited to 10KB and and the pk_data is limited to 500 bytes
+for performance reasons.  If you get the error of "arithmetic exception, numeric overflow, or string truncation" during
+extraction of a batch, set the contains_big_lob to true for the channel.
+
+Firebird 3 is supported, however legacy authentication must be enabled in order to connect.  Please refer to the Firebird 3.0 documentation for instructions on enabling this feature.
+
+.Supported Data Types
+|===
+|Data Type|Supported?
+
+| SmallInt | Yes
+| Integer | Yes
+| BigInt | Yes
+| Char | Yes
+| VarChar | Yes
+| Float | Yes
+| Decimal | Yes
+| Numeric | Yes
+| Double Precision | Yes
+| Date | Yes
+| Time | Yes
+| TimeStamp | Yes
+| Blob | No
+|===

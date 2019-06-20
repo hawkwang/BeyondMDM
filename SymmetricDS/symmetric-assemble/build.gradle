@@ -1,0 +1,80 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url 'http://repo.spring.io/plugins-release' }
+    }
+
+    dependencies {
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.7'
+        classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16'
+        classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
+        classpath 'io.spring.gradle:docbook-reference-plugin:0.3.1'
+        classpath ("com.smokejumperit.gradle.license:Gradle-License-Report:0.0.2") {
+            // guava 21 requires Java 8, setting up for a clean build with only Java 1.7 tools.
+            exclude group: 'com.google.guava', module: 'guava'
+        }
+        classpath 'com.google.guava:guava:27.0.1-android'
+    }
+}
+
+task buildScriptDependencies(type: org.gradle.api.tasks.diagnostics.DependencyReportTask) {
+    configurations = project.buildscript.configurations
+}
+
+if (project.properties.containsKey('pro')) {
+    install.enabled = false
+    uploadArchives.enabled = false
+} else {
+    apply from: symAssembleDir + '/common.gradle'
+}
+
+task generateJavadoc(type: Javadoc) {
+    destinationDir = new File(buildDir, 'doc/javadoc')
+    title = "SymmetricDS API $version"
+	group = 'SymmetricDS'
+	description = 'Generate JavaDoc HTML pages for API documentation'
+}
+
+task buildSymmetric {
+	group = 'SymmetricDS'
+	description = 'Build software, documentation, and distribution ZIP files'
+    dependsOn ':symmetric-android:androidDistZip', ':symmetric-server:serverDistZip'
+}
+
+task publishSymmetric {
+    dependsOn buildSymmetric
+	group = 'SymmetricDS'
+	description = 'Publish software to SourceForge website'
+    doLast {
+        ant.taskdef(name: 'scp', classname: 'org.apache.tools.ant.taskdefs.optional.ssh.Scp',
+        classpath: configurations.sshAntTask.asPath)
+
+        println "Publishing android distribution to source forge"
+        ant.scp(
+            todir: "$sourceforgeUser:$sourceforgePassword@frs.sourceforge.net:/home/frs/project/symmetricds/symmetricds/symmetricds-$majorMinorVersion",
+            trust: 'true',
+            verbose: 'true') {
+            fileset(dir: "../symmetric-android/build/distributions/") {
+                include(name: 'symmetric-android-' + version + '.zip')
+            }
+        }
+
+        println "Publishing server distribution to source forge"
+        ant.scp(
+            todir: "$sourceforgeUser:$sourceforgePassword@frs.sourceforge.net:/home/frs/project/symmetricds/symmetricds/symmetricds-$majorMinorVersion",
+            trust: 'true',
+            verbose: 'true') {
+            fileset(dir: "../symmetric-server/build/distributions/") { 
+                include(name: 'symmetric-server-' + version + '.zip')
+            }
+        }
+    }
+}
+
+task releaseSymmetric {
+    dependsOn publishSymmetric
+    dependsOn task('symmetric-server:publishDoc') 
+	group = 'SymmetricDS'
+	description = 'Publish software to SourceForge website and online documentation to SymmetricDS website'
+}
+

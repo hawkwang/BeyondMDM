@@ -1,0 +1,98 @@
+
+=== Oracle
+This section describes Oracle specific SymmetricDS details.
+
+==== Database Permissions
+The SymmetricDS database user generally needs privileges for connecting and creating tables (including indexes), triggers, sequences, 
+and procedures (including packages and functions). The following is an example of the needed grant statements:
+
+[source, SQL]
+GRANT CONNECT TO SYMMETRIC;
+GRANT RESOURCE TO SYMMETRIC;
+GRANT CREATE ANY TRIGGER TO SYMMETRIC;
+GRANT EXECUTE ON UTL_RAW TO SYMMETRIC;
+
+==== Known Limitations
+* The LONG data type is not supported with change capture, since LONG columns cannot be accessed from triggers.  The data in LONG columns can still be kept in sync by enabling the use_stream_lobs feature in <<TRIGGER>>.
+* The global precision of numeric columns is controlled by the oracle.template.precision parameter.  It defaults to a precision of 30,10
+* With the default settings a database row cannot exceed 4k.  If the error `'ORA-01489: result of string concatenation is too long'` occurs 
+then set `use_capture_lobs` to 1 in the <<TRIGGER>> table and `contains_big_lobs` to 1 on the assigned <<CHANNEL>>.  Triggers will need to be synchronized. By enabling 
+`use_capture_lobs`, the concatenated varchar string is cast to a clob which allows a length of more than 4k.  By enabling `contains_big_lobs`, the extraction of
+sym_data is cast to a clob which prevents truncation at 4k.  There is overhead for both of these settings
+* When multiple triggers are defined on the same table, then the order in which the triggers occur appears to be arbitrary
+
+==== Bulk Loader
+SymmetricDS has bulk loading capability available for Oracle. SymmetricDS specifies data loader types on a channel by channel basis. 
+To utilize Oracle Bulk loading versus straight JDBC insert, specify the Oracle Bulk Loader ("oracle_bulk") in the data_loader_type column of sym_channel.
+
+The bulk loader only supports simple data types.  The bulk loader does not support tables that contain lobs.
+
+==== Optional - Partitioning
+Partitioning the DATA table by channel can help insert, routing and extraction performance on concurrent, high throughput systems. 
+TRIGGERs should be organized to put data that is expected to be inserted concurrently on separate CHANNELs. 
+The following is an example of partitioning. Note that both the table and the index should be partitioned. The default value 
+allows for more channels to be added without having to modify the partitions.
+
+[source, SQL]
+CREATE TABLE SYM_DATA
+(
+    data_id INTEGER NOT NULL ,
+    table_name VARCHAR2(50) NOT NULL,
+    event_type CHAR(1) NOT NULL,
+    row_data CLOB,
+    pk_data CLOB,
+    old_data CLOB,
+    trigger_hist_id INTEGER NOT NULL,
+    channel_id VARCHAR2(20),
+    transaction_id VARCHAR2(1000),
+    source_node_id VARCHAR2(50),
+    external_data VARCHAR2(50),
+    create_time TIMESTAMP
+) PARTITION BY LIST (channel_id) (
+PARTITION P_CONFIG VALUES ('config'),
+PARTITION P_CHANNEL_ONE VALUES ('channel_one'),
+PARTITION P_CHANNEL_TWO VALUES ('channel_two'),
+...
+PARTITION P_CHANNEL_N VALUES ('channel_n'),
+PARTITION P_DEFAULT VALUES (DEFAULT));
+
+[source, SQL]            
+CREATE UNIQUE INDEX IDX_D_CHANNEL_ID ON SYM_DATA (DATA_ID, CHANNEL_ID)  LOCAL
+(
+ PARTITION I_CONFIG,
+ PARTITION I_CHANNEL_ONE,
+ PARTITION I_CHANNEL_TWO,
+ ...
+ PARTITION I_CHANNEL_N,
+ PARTITION I_DEFAULT
+);
+
+==== Supported Data Types
+            
+.Supported Data Types
+|===
+| Data Type | Supported?
+
+| Char | Yes
+| NChar | Yes
+| VarChar2 | Yes
+| NVarChar2 | Yes
+| Long | No
+| Number | Yes
+| Binary_Float | Yes
+| Binary_Double | Yes
+| Date | Yes
+| Timestamp | Yes
+| Timestamp With Time Zone | Yes
+| Timestamp With Local Time Zone | Yes
+| Interval Year to Month | Yes
+| Interval Day to Second | Yes
+| Raw | Yes
+| Long Raw | No
+| RowID | Yes
+| URowID | No
+| Clob | Yes
+| NClob | Yes
+| Blob | Yes
+| BFile | No
+|===

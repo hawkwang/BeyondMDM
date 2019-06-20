@@ -1,0 +1,46 @@
+In order for a node to synchronize with other nodes it must be registered.  When a node is registered, 
+it downloads its configuration as well as references to the nodes that it should sync with.  
+
+ifdef::pro[]
+[role="help"]
+To allow a node to register, navigate to Manage Nodes on the server, click the *Registration* button and select *Allow*.
+Registration requests appear at the top of the list with a question mark (?) for the Node ID. 
+
+image::manage/mange-nodes-allow-registration.png[role="help"]
+
+The registration menu has the following actions:
+
+[horizontal]
+Allow::  Accept the request and register the node.  The node is assigned a node ID and password, which are sent along with the configuration.  If the `auto.reload` or `auto.reload.reverse` parameters are true, an initial load is started.  
+Reject::  Reject the request by removing it.  The node can still make additional registration requests.
+Reopen::  Open registration for a node that is already registered, which forces the node to use the `registration.url` and pull configuration again.  The `auto.reload` and `auto.reload.reverse` parameters do not apply to reopen.  If the `reopen.use.same.password` parameter is false, a new node password is generated.
+Unregister::  Remove the node from any further data synchronization by removing registration, deleting any incoming batches, and marking any outgoing batches with status OK.
+
+You can remove a node from the command line with the following command:
+
+`bin/symadmin remove-node --engine <engine name> -n <node id>`
+
+endif::pro[]
+
+A node is considered unregistered if it does not have an <<NODE_IDENTITY>> row.  When a node is unregistered, 
+it will use the `registration.url` defined in the <<Node Properties File>> to request registration.  
+The `registration.url` of the new node is the `sync.url` of the node that is being registered with.
+
+Before a node is allowed to register, it must have an open registration.  If there is no open registration, then a 
+<<REGISTRATION_REQUEST>> is recorded. 
+
+You can open registration from the command line with the following command:
+
+`bin/symadmin open-registration --engine <engine name> <node group> <external id>`
+
+The <node group> and <external id> should match the `group.id` and `external.id` in the registering node's <<Node Properties File>>.
+
+Node registration is stored in the <<NODE>> and <<NODE_SECURITY>> tables.  Nodes are only allowed to register if rows exist 
+for the registering node and the `registration_enabled` flag is set to 1. 
+
+If the `auto.registration` SymmetricDS parameter is set to true, then when a node attempts to register, the node will 
+automatically be accepted.
+
+SymmetricDS allows you to have multiple nodes with the same `external_id`.  In order to enable this you must set 
+`external.id.is.unique.enabled` to false.
+

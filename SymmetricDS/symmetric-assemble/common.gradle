@@ -1,0 +1,274 @@
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.apache.tools.ant.filters.FixCrLfFilter
+import org.apache.tools.ant.filters.ReplaceTokens
+
+configurations {
+    sshAntTask
+}
+
+dependencies {
+    sshAntTask 'org.apache.ant:ant-jsch:1.10.5', 'com.jcraft:jsch:0.1.55'
+}
+
+allprojects {
+
+    apply plugin: 'eclipse'
+
+    group = 'org.jumpmind.symmetric'
+    
+    repositories {
+        jcenter()
+        maven { url "http://maven.jumpmind.com/repo" }
+        mavenCentral()
+        maven { url "http://maven.vaadin.com/vaadin-addons" }
+        maven { url 'https://plugins.gradle.org/m2' }
+        maven { url "http://packages.confluent.io/maven/" }
+        maven { url "http://redshift-maven-repository.s3-website-us-east-1.amazonaws.com/release" }
+    }
+        
+    ext {
+        majorMinorVersion = version.substring(0, version.indexOf(".", version.indexOf(".")+ 1))
+    }
+    
+}
+
+def ignoreDerivedResources(projectDescription, directories = ["build", "test-output"]) {
+  def count = directories.count { file(it).exists() }
+  if (count > 0) {
+    def filter = projectDescription
+      .appendNode("filteredResources")
+      .appendNode("filter")
+    filter.appendNode("id", System.currentTimeMillis().toString().trim())
+    filter.appendNode("type", "26")
+    filter.appendNode("name")
+    def matcher = filter.appendNode("matcher")
+    matcher.appendNode("id", "org.eclipse.ui.ide.orFilterMatcher")
+    def arguments = matcher.appendNode("arguments")
+    directories.each {
+      if (file(it).exists()) {
+        def dirMatcher = arguments.appendNode("matcher")
+        dirMatcher.appendNode("id", "org.eclipse.ui.ide.multiFilter")
+        dirMatcher.appendNode("arguments", "1.0-projectRelativePath-matches-false-false-${it}")
+      }
+    }
+  }
+}  
+
+subprojects { subproject ->
+
+    apply plugin:'license-report'
+    apply plugin: 'java'
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-maven'
+    apply plugin: 'propdeps-eclipse'
+    apply plugin: 'maven'
+
+    configurations { deployerJars }
+    configurations { testArtifacts.extendsFrom testRuntime }
+
+    configurations.provided.transitive = true
+    configurations.optional.transitive = false
+
+    sourceCompatibility=1.8
+    targetCompatibility=1.8
+    
+    eclipse {   
+        classpath {
+            downloadSources = true
+            downloadJavadoc = false
+        }
+        
+        jdt {
+            sourceCompatibility = 1.8
+            targetCompatibility = 1.8
+        }
+        
+        project.file.whenMerged { project ->
+            project.natures.remove('org.springsource.ide.eclipse.gradle.core.nature')
+            project.natures.remove('org.eclipse.buildship.core.gradleprojectnature')            
+        }
+    }
+    
+    javadoc {
+        failOnError = false
+    }
+    
+    afterEvaluate {
+        if(plugins.hasPlugin(JavaPlugin)) {
+            
+            // configuration here
+            rootProject.tasks.generateJavadoc {
+                source += files(sourceSets.collect { srcSet -> srcSet.allJava })
+                classpath += files(sourceSets*.compileClasspath)
+            }
+    
+        }
+    }    
+    
+    install.enabled = !project.properties.containsKey('pro')
+    uploadArchives.enabled = !project.properties.containsKey('pro')
+    
+    
+    task sourcesJar(type: Jar, dependsOn:classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+    
+    artifacts { archives sourcesJar }    
+    
+    uploadArchives {
+        repositories.mavenDeployer {
+            configuration = configurations.deployerJars
+            repository(url: deployUploadUrl) {
+                authentication(userName: deployUser, password: deployPassword)
+            }
+        }
+    }
+
+    task deploy {
+        description 'Shortcut for Maven users'
+        dependsOn tasks.uploadArchives
+    }
+
+    task testJar(type: Jar) {
+        classifier "test"
+        from sourceSets.test.output
+    }
+    
+    test {
+        ignoreFailures true
+        systemProperty "test.server", System.getProperty("test.server", "h2")
+        systemProperty "test.client", System.getProperty("test.client", "h2")
+        systemProperty "test.root", System.getProperty("test.root", "h2")
+        systemProperty "port.number", System.getProperty("port.number", "31415")
+        systemProperty "db2i.db.user", System.getProperty("db2i.db.user")
+        systemProperty "db2i.db.password", System.getProperty("db2i.db.password")
+        minHeapSize = "128m"
+        maxHeapSize = "512m"
+        forkEvery=1
+    }
+    
+    jar {
+        manifest {
+            attributes("Implementation-Title": project.name,
+                       "Implementation-Version": version,
+                       "Project-Artifact": project.name,                       
+                       "Build-Version": version,
+                       "Build-Time": new SimpleDateFormat("yyyyMMdd-HHmm").format(new Date()),
+                       "Build-Scm-Version": scmVersion)
+        }    
+    }
+
+    artifacts { testArtifacts testJar }
+
+    ext {
+        bshVersion = '2.0b6'
+        commonsBeanUtilsVersion = '1.9.3'
+        commonsCliVersion = '1.4'
+        commonsDbcpVersion = '1.4'
+        commonsFileuploadVersion = '1.4'
+        commonsIoVersion = '2.6'
+        commonsLangVersion = '2.6'
+        commonsNetVersion = '3.6'
+        commonsCodecVersion = '1.12'
+        commonsCollectionVersion = '3.2.2'
+        hamcrestVersion = '1.3'
+        h2Version = '1.3.176'
+        derbyVersion = '10.14.2.0'
+        mariaDbVersion = '2.4.0'
+        postgresqlVersion =  '42.2.5'
+        hsqldbVersion = '2.4.1'
+        sqliteVersion = '3.25.2'
+        firebirdVersion = '3.0.5'
+        jt400Version = '9.7'
+        javaMailVersion = '1.6.2'
+        jdomVersion = '2.0.5'
+        junitVersion = '4.11'
+        log4jVersion = '1.2.17'
+        slf4jVersion = '1.7.26'
+        mockitoVersion = '1.9.5'
+        powerMockVersion = '1.5.3'
+        mysqlVersion = '5.1.45'
+        servletVersion = '3.1.0'
+        springVersion = '4.3.22.RELEASE'
+        jtdsVersion = '1.3.1'
+        voltDbVersion = '8.4.1'
+        bouncyCastleVersion = '1.59'
+        animalSnifferVersion = '1.10'
+        jnaVersion = '4.2.0'
+        jettyVersion = project.property('jetty.version')
+        nuodbVersion = '3.3.1'
+        tiberoVersion = '6'
+        env = System.getenv()
+    }
+
+    dependencies {
+        compile "org.slf4j:slf4j-api:$slf4jVersion"
+        compile "org.slf4j:jul-to-slf4j:$slf4jVersion"
+        compile "org.slf4j:jcl-over-slf4j:$slf4jVersion"
+        compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
+        compile "log4j:log4j:$log4jVersion"
+        
+        provided "org.apache.derby:derby:$derbyVersion"
+        provided "org.apache.derby:derbytools:$derbyVersion"
+        provided "mysql:mysql-connector-java:$mysqlVersion"
+        provided ("org.mariadb.jdbc:mariadb-java-client:$mariaDbVersion") { exclude group: 'net.java.dev.jna' }
+        provided "org.postgresql:postgresql:$postgresqlVersion"
+        provided "jdbc:ojdbc:11.2.0.3"
+        provided "net.sourceforge.jtds:jtds:$jtdsVersion"
+        provided "org.voltdb:voltdbclient:$voltDbVersion"
+        provided "org.hsqldb:hsqldb:$hsqldbVersion"
+        provided "com.h2database:h2:$h2Version"
+        provided "org.xerial:sqlite-jdbc:$sqliteVersion"
+        provided ("org.firebirdsql.jdbc:jaybird:$firebirdVersion") { 
+            exclude group: 'geronimo-spec'
+            exclude group: 'log4j'
+            exclude group: 'junit'
+            exclude group: 'xalan'
+        }
+        provided "xalan:xalan:2.7.1" // Required by  org.firebirdsql.jdbc:jaybird, but a user's security requirement was for a newer version of xalan.
+        provided ("net.sf.jt400:jt400:$jt400Version")
+        provided "jdbc.nuodb:nuodb-jdbc:$nuodbVersion"
+        provided "jdbc.tibero:tibero:$tiberoVersion"
+        // javax.resource needed by jaybird
+        provided "org.apache.geronimo.specs:geronimo-j2ee-connector_1.6_spec:1.0"
+        provided ("com.datastax.cassandra:cassandra-driver-core:3.1.4") {
+            exclude group: 'org.slf4j'
+        }
+        provided ("nl.cad:tps-parse:1.0.15-SNAPSHOT") {
+        	exclude group: 'commons-lang', module: 'commons-lang'
+        }
+        provided ("org.apache.kafka:kafka-clients:1.1.0") {
+            exclude group: 'org.slf4j'
+        }
+        provided ("org.apache.avro:avro:1.8.2") {
+            exclude group: 'org.slf4j'
+        }
+		provided ("io.confluent:kafka-avro-serializer:3.2.1") {
+			exclude group: 'com.fasterxml.jackson.core'
+            exclude group: 'org.slf4j'
+        }
+		
+        testCompile fileTree(dir: System.getProperty("user.home") + '/.symmetricds/lib', include: '*.jar')
+        testCompile "junit:junit:$junitVersion"
+        testCompile "org.hamcrest:hamcrest-all:$hamcrestVersion"
+        testCompile "org.mockito:mockito-all:$mockitoVersion"
+        testCompile "org.powermock:powermock-api-mockito:$powerMockVersion"
+        testCompile "org.powermock:powermock-module-junit4:$powerMockVersion"
+        
+        deployerJars "org.apache.maven.wagon:wagon-ssh:2.2"
+        
+    }    
+
+    task develop {
+        dependsOn tasks.cleanEclipse, tasks.eclipse
+        
+        doLast {
+            def wstFacetXml = "$projectDir/.settings/org.eclipse.wst.common.project.facet.core.xml"
+            println "Deleting $wstFacetXml"
+            delete wstFacetXml 
+        }
+    }
+}
