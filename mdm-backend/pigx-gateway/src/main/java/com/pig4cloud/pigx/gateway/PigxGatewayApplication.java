@@ -17,22 +17,23 @@
  *
  */
 
-package com.pig4cloud.pigx.common.log.annotation;
+package com.pig4cloud.pigx.gateway;
+
+
+import com.pig4cloud.pigx.common.gateway.annotation.EnablePigxDynamicRoute;
+import org.springframework.boot.SpringApplication;
+import org.springframework.cloud.client.SpringCloudApplication;
 
 /**
  * @author lengleng
- * @date 2018/6/28
- * 操作日志注解
+ * @date 2018年06月21日
+ * 网关应用
  */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface SysLog {
+@EnablePigxDynamicRoute
+@SpringCloudApplication
+public class PigxGatewayApplication {
 
-	/**
-	 * 描述
-	 *
-	 * @return {String}
-	 */
-	String value();
+	public static void main(String[] args) {
+		SpringApplication.run(PigxGatewayApplication.class, args);
+	}
 }

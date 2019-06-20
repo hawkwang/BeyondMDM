@@ -23,8 +23,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
-import java.lang.annotation.*;
-
 /**
  * @author lengleng
  * @date 2018/11/10

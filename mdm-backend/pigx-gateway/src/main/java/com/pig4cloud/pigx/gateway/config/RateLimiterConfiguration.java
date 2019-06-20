@@ -17,22 +17,22 @@
  *
  */
 
-package com.pig4cloud.pigx.common.log.annotation;
+package com.pig4cloud.pigx.gateway.config;
+
+import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import reactor.core.publisher.Mono;
 
 /**
  * @author lengleng
- * @date 2018/6/28
- * 操作日志注解
+ * @date 2018/7/1
+ * 路由限流配置
  */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface SysLog {
-
-	/**
-	 * 描述
-	 *
-	 * @return {String}
-	 */
-	String value();
+@Configuration
+public class RateLimiterConfiguration {
+	@Bean(value = "remoteAddrKeyResolver")
+	public KeyResolver remoteAddrKeyResolver() {
+		return exchange -> Mono.just(exchange.getRequest().getRemoteAddress().getAddress().getHostAddress());
+	}
 }

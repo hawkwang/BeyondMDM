@@ -17,8 +17,6 @@
 
 package com.pig4cloud.pigx.common.security.annotation;
 
-import java.lang.annotation.*;
-
 /**
  * @author lengleng
  * @date 2018/11/26

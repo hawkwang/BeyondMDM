@@ -15,20 +15,28 @@
  * Author: lengleng (wangiegie@gmail.com)
  */
 
-package com.pig4cloud.pigx.common.job.annotation;
+package com.pig4cloud.pigx.gateway.config;
 
-import com.pig4cloud.pigx.common.job.ElasticJobAutoConfiguration;
-import org.springframework.context.annotation.Import;
+import lombok.Data;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author lengleng
- * @date 2018/7/24
- * 开启pigx job
+ * @date 2018/7/22
+ * 网关不校验终端配置
  */
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Inherited
-@Import({ElasticJobAutoConfiguration.class})
-public @interface EnablePigxJob {
+@Data
+@Configuration
+@RefreshScope
+@ConditionalOnExpression("!'${ignore}'.isEmpty()")
+@ConfigurationProperties(prefix = "ignore")
+public class FilterIgnorePropertiesConfig {
+	private List<String> clients = new ArrayList<>();
+	private List<String> swaggerProviders=new ArrayList<>();
 }
