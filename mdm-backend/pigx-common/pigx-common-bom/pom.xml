@@ -19,7 +19,7 @@
 		<pigx.version>2.6.0</pigx.version>
 		<jackson.modules>2.9.6</jackson.modules>
 		<mybatis-plus.version>3.1.0</mybatis-plus.version>
-		<mysql.connector.version>8.0.13</mysql.connector.version>
+		<mysql.connector.version>8.0.28</mysql.connector.version>
 	</properties>
 
 	<dependencyManagement>
