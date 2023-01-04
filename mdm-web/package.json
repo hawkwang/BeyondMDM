@@ -29,7 +29,7 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.1.1",
     "@vue/cli-plugin-eslint": "^3.1.5",
-    "@vue/cli-service": "^3.1.4",
+    "@vue/cli-service": "^5.0.8",
     "chai": "^4.1.2",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",
